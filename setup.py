@@ -71,7 +71,7 @@ requires = [
 
 setup(
   name                  = 'genedata',
-  version               = '0.1.0',
+  version               = '0.1.1',
   description           = 'An un-opinionated template abstraction layer',
   long_description      = README,
   classifiers           = [
