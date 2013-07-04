@@ -94,6 +94,15 @@ class TestGenedata(unittest.TestCase):
     chk = '<html><body><h1>Genedata</h1></body></html>'
     self.assertMultiLineEqual(out, chk)
 
+  #----------------------------------------------------------------------------
+  def test_string(self):
+    root = genedata.Template(source='string:ALL YOUR ${plan["from"]} ARE BELONG TO ${plan["to"]}')
+    params = dict(plan=adict((('from', 'BASE'), ('to', 'US'))))
+    outt = root.render('text', params)
+    outh = root.render('html', params)
+    self.assertEqual(outt, 'ALL YOUR BASE ARE BELONG TO US')
+    self.assertEqual(outh, 'ALL YOUR BASE ARE BELONG TO US')
+
 #------------------------------------------------------------------------------
 # end of $Id$
 #------------------------------------------------------------------------------

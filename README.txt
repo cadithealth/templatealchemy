@@ -98,6 +98,12 @@ storage mechanism. The following built-in sources exist:
   SQLAlchemy database abstraction library. See `API Details`_ for more
   information.
 
+* ``string``:
+
+  The `string` source allows a simple way to provide templates inline.
+  Generally not very useful beyond that -- serious re-evaluation is
+  recommended if this is used frequently in an application...
+
 
 ### Renderers
 
