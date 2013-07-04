@@ -1,0 +1,13 @@
+<html>
+ <head>
+  <title>${title}</title>
+ </head>
+ <body>
+  <h1>${title}</h1>
+  <h2>${doc.title}</h2>
+  % for section in sections:
+   <h3>${section.title}</h3>
+   <p>${section.text}</p>
+  % endfor
+ </body>
+</html>
