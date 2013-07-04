@@ -187,7 +187,7 @@ foo  = root.getTemplate('foo')
 bar  = foo.getTemplate('bar')  # or root.getTemplate('foo/bar')
 
 assert(bar.render('text', dict(name='Joe')) == 'Name is Joe')
-assert(bar.render('html', dict(name='Joe')) == <html><p>Joe</p></html>')
+assert(bar.render('html', dict(name='Joe')) == '<html><p>Joe</p></html>')
 ```
 
 #### SQLAlchemy
