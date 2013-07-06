@@ -1,33 +1,37 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # file: $Id$
-# lib:  genedata.pkg
+# lib:  templatealchemy.mako
 # auth: Philip J Grabner <grabner@cadit.com>
 # date: 2013/07/03
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-import pkgutil
-from genedata import api, util
+from __future__ import absolute_import
+
+import mako.template
+from templatealchemy import api, util
 
 #------------------------------------------------------------------------------
-def loadSource(spec=None):
-  return PkgSource(spec)
+def loadRenderer(spec=None):
+  return MakoRenderer(spec)
 
 #------------------------------------------------------------------------------
-class PkgSource(api.Source):
+class MakoRenderer(api.Renderer):
 
   #----------------------------------------------------------------------------
   def __init__(self, spec):
-    self.module, self.path = spec.split(':', 1)
+    # TODO: expose control of `mako.template.Template()` args/kwargs...
+    self.spec = spec
+    self.lookup = None
+    self.filters = ['h']
 
   #----------------------------------------------------------------------------
-  def getSource(self, name):
-    return PkgSource(self.module + ':' + self.path + '/' + name)
-
-  #----------------------------------------------------------------------------
-  def get(self, format):
-    return pkgutil.get_data(self.module, self.path + '.' + format)
+  def render(self, context, data, params):
+    # TODO: take advantage of mako's `TemplateLookup` class...
+    tpl = mako.template.Template(
+      text=data, lookup=self.lookup, default_filters=self.filters)
+    return tpl.render(**params)
 
 #------------------------------------------------------------------------------
 # end of $Id$

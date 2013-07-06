@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # file: $Id$
-# lib:  genedata.sqlalchemy
+# lib:  templatealchemy.sqlalchemy
 # auth: Philip J Grabner <grabner@cadit.com>
 # date: 2013/07/03
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
@@ -10,7 +10,7 @@
 from __future__ import absolute_import
 
 import sqlalchemy as sa
-from genedata import api, util
+from templatealchemy import api, util
 
 #------------------------------------------------------------------------------
 def loadSource(spec=None):

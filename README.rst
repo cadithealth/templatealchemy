@@ -7,8 +7,8 @@ come back later.
 
 TemplateAlchemy aims to be to the fragmented world of templates what
 SQLAlchemy is to the world of databases: a generic abstraction for
-systems that need templated data to not care about what language or
-implementation is used to render that data.
+systems that need templated data, but don't care about what language
+or implementation is used to render that data.
 
 In essence, the primary purpose of this package is to allow other
 packages that need templated data (such as the email generation
@@ -44,10 +44,11 @@ Use:
     renderer = 'mako',
     )
 
-  # load the template in 'mypackagename:lib/templates/foo'
+  # load the sub-template 'foo'
   foo = root.getTemplate('foo')
 
-  # render the 'text' version with some parameters
+  # render the 'text' version with some parameters; the
+  # actual template is then in 'mypackagename:lib/templates/foo.text'
   params = dict(value='bar', zig='zog')
   text = foo.render('text', params)
 
@@ -148,8 +149,8 @@ This section provides in-depth API information. Both sources and
 renderers can be passed to TemplateAlchemy either as an implementation
 of the respective API objects or as string specifications. In the
 latter case, the string must be in the format ``TYPE:SPEC``, for
-example ``mako:default_filters=[h]``. The ``:SPEC`` can be left off to
-use default values, for example ``mako``.
+example ``"mako:default_filters=[h]"``. The ``:SPEC`` can be left off
+to use default values, for example ``"mako"``.
 
 Sources
 -------

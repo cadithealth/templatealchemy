@@ -16,44 +16,7 @@ assert(sys.version_info[0] > 2
        and sys.version_info[1] >= 7)
 
 here = os.path.abspath(os.path.dirname(__file__))
-try:
-  README = open(os.path.join(here, 'README.txt')).read()
-except IOError:
-  README = ''
-
-#------------------------------------------------------------------------------
-# ugh. why couldn't github just have supported rst??? ignats.
-#------------------------------------------------------------------------------
-mdheader = re.compile('^(#+) (.*)$', flags=re.MULTILINE)
-mdlevels = '=-~+"\''
-def hdrepl(match):
-  lvl = len(match.group(1)) - 1
-  if lvl < 0:
-    lvl = 0
-  if lvl >= len(mdlevels):
-    lvl = len(mdlevels) - 1
-  ret = match.group(2).strip()
-  return ret + '\n' + ( mdlevels[lvl] * len(ret) ) + '\n'
-#------------------------------------------------------------------------------
-mdquote = re.compile('^``` ?(\w+)?\n(.*?)\n```\n', flags=re.MULTILINE|re.DOTALL)
-def qtrepl(match):
-  if match.group(1) == 'python':
-    ret = '.. code-block:: python\n'
-  else:
-    ret = '::\n'
-  for line in match.group(2).split('\n'):
-    if len(line.strip()) <= 0:
-      ret += '\n'
-    else:
-      ret += '\n  ' + line
-  return ret + '\n'
-#------------------------------------------------------------------------------
-def md2rst(text):
-  text = mdquote.sub(qtrepl, text)
-  text = mdheader.sub(hdrepl, text)
-  return text
-#------------------------------------------------------------------------------
-README = md2rst(README)
+README = open(os.path.join(here, 'README.rst')).read()
 
 test_requires = [
   'nose                 >= 1.2.1',
@@ -68,17 +31,18 @@ requires = [
   'Mako                 >= 0.7.2',
   'MarkupSafe           >= 0.18',
   'pystache             >= 0.5.3',
+  # 'Markdown             >= 2.3.1',
   ]
 
 entrypoints = {
   'console_scripts': [
-    'genedatac          = genedata.cli:main',
+    'ta-eval            = templatealchemy.cli:main',
     ],
   }
 
 setup(
-  name                  = 'genedata',
-  version               = '0.1.1',
+  name                  = 'TemplateAlchemy',
+  version               = '0.1.2',
   description           = 'An un-opinionated template abstraction layer',
   long_description      = README,
   classifiers           = [
@@ -93,15 +57,15 @@ setup(
     ],
   author                = 'Philip J Grabner, Cadit Health Inc',
   author_email          = 'oss@cadit.com',
-  url                   = 'http://github.com/cadithealth/genedata',
-  keywords              = 'template unopinionated abstraction layer mako mustache',
+  url                   = 'http://github.com/cadithealth/templatealchemy',
+  keywords              = 'template unopinionated abstraction layer sqlalchemy mako mustache',
   packages              = find_packages(),
-  namespace_packages    = ['genedata'],
+  namespace_packages    = ['templatealchemy'],
   include_package_data  = True,
   zip_safe              = True,
   install_requires      = requires,
   tests_require         = test_requires,
-  test_suite            = 'genedata',
+  test_suite            = 'templatealchemy',
   entry_points          = entrypoints,
   license               = 'MIT (http://opensource.org/licenses/MIT)',
   )

@@ -1,32 +1,33 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # file: $Id$
-# lib:  genedata.string
+# lib:  templatealchemy.pkg
 # auth: Philip J Grabner <grabner@cadit.com>
 # date: 2013/07/03
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-from genedata import api, util
+import pkgutil
+from templatealchemy import api, util
 
 #------------------------------------------------------------------------------
 def loadSource(spec=None):
-  return StringSource(spec)
+  return PkgSource(spec)
 
 #------------------------------------------------------------------------------
-class StringSource(api.Source):
+class PkgSource(api.Source):
 
   #----------------------------------------------------------------------------
   def __init__(self, spec):
-    self.data = spec
+    self.module, self.path = spec.split(':', 1)
 
   #----------------------------------------------------------------------------
   def getSource(self, name):
-    raise SyntaxError('`string` sources do not support sub-sources')
+    return PkgSource(self.module + ':' + self.path + '/' + name)
 
   #----------------------------------------------------------------------------
   def get(self, format):
-    return self.data
+    return pkgutil.get_data(self.module, self.path + '.' + format)
 
 #------------------------------------------------------------------------------
 # end of $Id$

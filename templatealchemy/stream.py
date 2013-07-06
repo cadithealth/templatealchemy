@@ -1,29 +1,38 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # file: $Id$
-# lib:  genedata.api
+# lib:  templatealchemy.stream
 # auth: Philip J Grabner <grabner@cadit.com>
-# date: 2013/07/03
+# date: 2013/07/05
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
+'''
+A TemplateAlchemy source that gets the template source from a
+file-like object. Note that the file is not buffered, and therefore
+the template is "single-use".
+'''
+
+from templatealchemy import api, util
+
 #------------------------------------------------------------------------------
-class Source(object):
+def loadSource(spec=None):
+  return StreamSource(spec)
+
+#------------------------------------------------------------------------------
+class StreamSource(api.Source):
 
   #----------------------------------------------------------------------------
-  def get(self, spec):
-    raise NotImplementedError()
+  def __init__(self, spec):
+    self.stream = spec
 
   #----------------------------------------------------------------------------
   def getSource(self, name):
-    raise NotImplementedError()
-
-#------------------------------------------------------------------------------
-class Renderer(object):
+    raise SyntaxError('`stream` sources do not support sub-sources')
 
   #----------------------------------------------------------------------------
-  def render(self, context, data, params):
-    raise NotImplementedError()
+  def get(self, format):
+    return self.stream.read()
 
 #------------------------------------------------------------------------------
 # end of $Id$

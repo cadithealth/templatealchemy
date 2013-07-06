@@ -1,33 +1,29 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # file: $Id$
-# lib:  genedata.file
+# lib:  templatealchemy.api
 # auth: Philip J Grabner <grabner@cadit.com>
 # date: 2013/07/03
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-from genedata import api, util
-
 #------------------------------------------------------------------------------
-def loadSource(spec=None):
-  return FileSource(spec)
-
-#------------------------------------------------------------------------------
-class FileSource(api.Source):
+class Source(object):
 
   #----------------------------------------------------------------------------
-  def __init__(self, spec):
-    self.path = spec
+  def get(self, spec):
+    raise NotImplementedError()
 
   #----------------------------------------------------------------------------
   def getSource(self, name):
-    return FileSource(self.path + '/' + name)
+    raise NotImplementedError()
+
+#------------------------------------------------------------------------------
+class Renderer(object):
 
   #----------------------------------------------------------------------------
-  def get(self, format):
-    with open(self.path + '.' + format, 'rb') as fp:
-      return fp.read()
+  def render(self, context, data, params):
+    raise NotImplementedError()
 
 #------------------------------------------------------------------------------
 # end of $Id$

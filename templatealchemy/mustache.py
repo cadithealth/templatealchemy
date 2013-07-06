@@ -1,38 +1,30 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # file: $Id$
-# lib:  genedata.stream
+# lib:  templatealchemy.mustache
 # auth: Philip J Grabner <grabner@cadit.com>
-# date: 2013/07/05
+# date: 2013/07/03
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-'''
-A genedata source that gets the template source from a file-like
-object. Note that the file is not buffered, and therefore the template
-is "single-use".
-'''
-
-from genedata import api, util
+import pystache
+from templatealchemy import api, util
 
 #------------------------------------------------------------------------------
-def loadSource(spec=None):
-  return StreamSource(spec)
+def loadRenderer(spec=None):
+  return MustacheRenderer(spec)
 
 #------------------------------------------------------------------------------
-class StreamSource(api.Source):
+class MustacheRenderer(api.Renderer):
 
   #----------------------------------------------------------------------------
   def __init__(self, spec):
-    self.stream = spec
+    self.spec = spec
 
   #----------------------------------------------------------------------------
-  def getSource(self, name):
-    raise SyntaxError('`stream` sources do not support sub-sources')
-
-  #----------------------------------------------------------------------------
-  def get(self, format):
-    return self.stream.read()
+  def render(self, context, data, params):
+    # todo: do anything with `spec`?
+    return pystache.render(data, params)
 
 #------------------------------------------------------------------------------
 # end of $Id$

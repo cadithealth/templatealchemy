@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # file: $Id$
-# lib:  genedata.engine
+# lib:  templatealchemy.engine
 # auth: Philip J Grabner <grabner@cadit.com>
 # date: 2013/07/03
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
@@ -19,7 +19,7 @@ def loadSource(spec):
   if not isinstance(spec, basestring):
     return spec
   spec = spec.split(':', 1)
-  loader = util.resolve('genedata.' + spec.pop(0) + '.loadSource')
+  loader = util.resolve('templatealchemy.' + spec.pop(0) + '.loadSource')
   return loader(spec.pop(0) if spec else None)
 
 #------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ def loadRenderer(spec):
   if not isinstance(spec, basestring):
     return spec
   spec = spec.split(':', 1)
-  loader = util.resolve('genedata.' + spec.pop(0) + '.loadRenderer')
+  loader = util.resolve('templatealchemy.' + spec.pop(0) + '.loadRenderer')
   return loader(spec.pop(0) if spec else None)
 
 #------------------------------------------------------------------------------
@@ -38,6 +38,7 @@ class Template(object):
 
   #----------------------------------------------------------------------------
   def __init__(self, source=None, renderer=None):
+    # TODO: if `source` is None default to caller's package...
     self.source   = loadSource(source)
     self.renderer = loadRenderer(renderer)
 

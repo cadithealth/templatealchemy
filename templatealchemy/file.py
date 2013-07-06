@@ -1,30 +1,33 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # file: $Id$
-# lib:  genedata.mustache
+# lib:  templatealchemy.file
 # auth: Philip J Grabner <grabner@cadit.com>
 # date: 2013/07/03
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-import pystache
-from genedata import api, util
+from templatealchemy import api, util
 
 #------------------------------------------------------------------------------
-def loadRenderer(spec=None):
-  return MustacheRenderer(spec)
+def loadSource(spec=None):
+  return FileSource(spec)
 
 #------------------------------------------------------------------------------
-class MustacheRenderer(api.Renderer):
+class FileSource(api.Source):
 
   #----------------------------------------------------------------------------
   def __init__(self, spec):
-    self.spec = spec
+    self.path = spec
 
   #----------------------------------------------------------------------------
-  def render(self, context, data, params):
-    # todo: do anything with `spec`?
-    return pystache.render(data, params)
+  def getSource(self, name):
+    return FileSource(self.path + '/' + name)
+
+  #----------------------------------------------------------------------------
+  def get(self, format):
+    with open(self.path + '.' + format, 'rb') as fp:
+      return fp.read()
 
 #------------------------------------------------------------------------------
 # end of $Id$
