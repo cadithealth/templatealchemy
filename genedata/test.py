@@ -139,7 +139,7 @@ class TestGenedata(unittest.TestCase):
  </head>
  <body>
   <h1>Genedata</h1>
-  <h2>Mako</h2>
+  <h2>Command Line</h2>
    <h3>Overview</h3>
    <p>Good</p>
    <h3>Details</h3>
