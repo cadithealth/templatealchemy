@@ -1,0 +1,39 @@
+# -*- coding: utf-8 -*-
+#------------------------------------------------------------------------------
+# file: $Id$
+# lib:  genedata.stream
+# auth: Philip J Grabner <grabner@cadit.com>
+# date: 2013/07/05
+# copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
+#------------------------------------------------------------------------------
+
+'''
+A genedata source that gets the template source from a file-like
+object. Note that the file is not buffered, and therefore the template
+is "single-use".
+'''
+
+from genedata import api, util
+
+#------------------------------------------------------------------------------
+def loadSource(spec=None):
+  return StreamSource(spec)
+
+#------------------------------------------------------------------------------
+class StreamSource(api.Source):
+
+  #----------------------------------------------------------------------------
+  def __init__(self, spec):
+    self.stream = spec
+
+  #----------------------------------------------------------------------------
+  def getSource(self, name):
+    raise SyntaxError('`stream` sources do not support sub-sources')
+
+  #----------------------------------------------------------------------------
+  def get(self, format):
+    return self.stream.read()
+
+#------------------------------------------------------------------------------
+# end of $Id$
+#------------------------------------------------------------------------------
