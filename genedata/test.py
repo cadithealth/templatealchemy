@@ -103,6 +103,54 @@ class TestGenedata(unittest.TestCase):
     self.assertEqual(outt, 'ALL YOUR BASE ARE BELONG TO US')
     self.assertEqual(outh, 'ALL YOUR BASE ARE BELONG TO US')
 
+  #----------------------------------------------------------------------------
+  def test_commandLine(self):
+    from . import cli
+    from StringIO import StringIO
+    out = StringIO()
+    tpl = '''\
+<html>
+ <head>
+  <title>{{title}}</title>
+ </head>
+ <body>
+  <h1>{{title}}</h1>
+  <h2>{{doc.title}}</h2>
+  {{#sections}}
+   <h3>{{title}}</h3>
+   <p>{{text}}</p>
+  {{/sections}}
+ </body>
+</html>
+'''
+    cli.main([
+        '--params',
+        '{title: "Genedata", doc: {title: "Command Line"}, sections: ['
+        + '{title: Overview, text: Good},'
+        + '{title: Details, text: Poor},'
+        + '{title: Utility, text: Excellent},'
+        + ']}',
+        '--renderer', 'mustache',
+        'string:' + tpl], output=out)
+    chk = '''\
+<html>
+ <head>
+  <title>Genedata</title>
+ </head>
+ <body>
+  <h1>Genedata</h1>
+  <h2>Mako</h2>
+   <h3>Overview</h3>
+   <p>Good</p>
+   <h3>Details</h3>
+   <p>Poor</p>
+   <h3>Utility</h3>
+   <p>Excellent</p>
+ </body>
+</html>
+'''
+    self.assertMultiLineEqual(out.getvalue(), chk)
+
 #------------------------------------------------------------------------------
 # end of $Id$
 #------------------------------------------------------------------------------
