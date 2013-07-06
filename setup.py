@@ -66,8 +66,15 @@ requires = [
   # TODO: make these only dependencies if they are actually wanted...
   'SQLAlchemy           >= 0.8.1',
   'Mako                 >= 0.7.2',
+  'MarkupSafe           >= 0.18',
   'pystache             >= 0.5.3',
   ]
+
+entrypoints = {
+  'console_scripts': [
+    'genedatac          = genedata.cli:main',
+    ],
+  }
 
 setup(
   name                  = 'genedata',
@@ -95,7 +102,7 @@ setup(
   install_requires      = requires,
   tests_require         = test_requires,
   test_suite            = 'genedata',
-  entry_points          = '',
+  entry_points          = entrypoints,
   license               = 'MIT (http://opensource.org/licenses/MIT)',
   )
 
