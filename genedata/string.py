@@ -22,7 +22,7 @@ class StringSource(api.Source):
 
   #----------------------------------------------------------------------------
   def getSource(self, name):
-    raise SyntaxError('`string` templates do not support sub-templates')
+    raise SyntaxError('`string` sources do not support sub-sources')
 
   #----------------------------------------------------------------------------
   def get(self, format):
