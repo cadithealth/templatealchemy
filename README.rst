@@ -2,8 +2,10 @@
 TemplateAlchemy
 ===============
 
-IMPORTANT: TemplateAlchemy is in its very early stages - you should
-come back later.
+.. WARNING::
+
+  TemplateAlchemy is in its very early stages - you should come back
+  later.
 
 TemplateAlchemy aims to be to the fragmented world of templates what
 SQLAlchemy is to the world of databases: a generic abstraction for
@@ -53,8 +55,8 @@ Use:
   text = foo.render('text', params)
 
   # get meta information about the template
-  if 'attachments' in foo.meta.maps:
-     for attachment in foo.getMap('attachments'):
+  if 'attachments' in foo.meta:
+     for attachment in foo.meta.attachments:
        # ... do something with each attachment
 
   # supported formats are stored in meta.formats
@@ -78,6 +80,11 @@ The primary API exposed by TemplateAlchemy is the
 In order to achieve these functions, templates use *sources* and
 *renderers*. Sources provide read access to persistent storage and
 renderers convert source data into output form.
+
+.. IMPORTANT::
+
+  The special format ``spec`` is reserved and used to parameterize
+  template meta information; it must not be used as a format.
 
 
 Sources
@@ -142,6 +149,7 @@ engines built-in:
   better choice of renderer if the input data is not trusted. See `API
   Details`_ for more information.
 
+
 API Details
 ===========
 
@@ -167,9 +175,11 @@ The abstract interface for a TemplateAlchemy source is in
 
     def get(self, format):
       '''
-      Returns the source content for the current template
+      Returns the source content stream for the current template
       source for the specified `format`. If `format` is None,
       the "default" format (if applicable) should be returned.
+      The returned object must be a file-like object supporting
+      read access.
       '''
 
     def getSource(self, name):
@@ -178,6 +188,21 @@ The abstract interface for a TemplateAlchemy source is in
       template, with the specified `name`. This is seen as a hierchical
       relationship, and is typically represented as a slash ('/')
       delimited path.
+      '''
+
+    def getFormats(self):
+      '''
+      Returns a list of all the available formats for this source.
+      '''
+
+    def getRelated(self, name):
+      '''
+      Returns a content stream for the related object `name` that
+      is relative to the current template. Typically this is used
+      for meta-information *spec* definitions using the "!include"
+      or "!include-raw" directives. As with :meth:`get`, the
+      returned object must be a file-like object supporting read
+      access.
       '''
 
 
@@ -203,7 +228,7 @@ file extension, adjusted for any `spec` rules.
 
 For example, given the following filesystem structure:
 
-.. code-block::
+.. code-block:: text
 
   -- /myroot/
      `-- foo/
@@ -242,7 +267,7 @@ standard direct connection, use a subclass of
 
 For example, given the following database content:
 
-.. code-block::
+.. code-block:: text
 
   $ sqlite3 -header -column /var/lib/templates.db 'select * from template'
   name        format      content
@@ -276,11 +301,12 @@ The abstract interface for a TemplateAlchemy renderer is in
 
   class templatealchemy.api.Renderer(object):
 
-    def render(self, context, data, params):
+    def render(self, context, stream, params):
       '''
-      Renders the given template `data` (as a binary blob of data)
-      with the given `params`, which should be typically passed to
-      the template as variables using a template-specific mechanism.
+      Renders the given template data `stream` (as a read-access
+      file-like object) to serialized rendered output. The given
+      `params` provide variables that are typically passed to the
+      template using template-specific mechanisms.
 
       todo: update this when the time comes:
 
