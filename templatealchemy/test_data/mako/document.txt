@@ -1,0 +1,9 @@
+# ${title}
+
+${'##'} ${doc.title}
+% for section in sections:
+
+${'###'} ${section.title}
+
+${section.text}
+% endfor
