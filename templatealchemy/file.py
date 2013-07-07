@@ -7,7 +7,7 @@
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-import os.path
+import os
 from templatealchemy import api, util
 
 #------------------------------------------------------------------------------
@@ -25,9 +25,14 @@ class FileSource(api.Source):
   def getSource(self, name):
     return FileSource(self.path + '/' + name)
 
-  # #----------------------------------------------------------------------------
-  # def getFormats(self):
-  #   ...
+  #----------------------------------------------------------------------------
+  def getFormats(self):
+    path, base = os.path.split(self.path)
+    base += '.'
+    return [
+      cur[len(base):]
+      for cur in os.listdir(path)
+      if cur.startswith(base) and os.path.isfile(os.path.join(path, cur))]
 
   #----------------------------------------------------------------------------
   def get(self, format):

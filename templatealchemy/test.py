@@ -106,6 +106,63 @@ Excellent
     self.assertEqual(tpl.meta.formats, ['html', 'text'])
 
   #----------------------------------------------------------------------------
+  def test_mako_file(self):
+    # TODO: this test will only work if TemplateAlchemy is not zipped...
+    #       not quite sure how to test the 'file' source.
+    root = templatealchemy.Template(
+      source='file:' + os.path.join(os.path.dirname(__file__), 'test_data', 'mako'),
+      renderer='mako',
+      extmap={'text': 'txt'})
+    tpl = root.getTemplate('document')
+    params = adict(
+      title='TemplateAlchemy',
+      doc=adict(title='Mako'),
+      sections=[
+        adict(title='Overview', text='Good'),
+        adict(title='Details', text='Poor'),
+        adict(title='Utility', text='Excellent'),
+        ])
+    out = tpl.render('html', params)
+    chk = '''\
+<html>
+ <head>
+  <title>TemplateAlchemy</title>
+ </head>
+ <body>
+  <h1>TemplateAlchemy</h1>
+  <h2>Mako</h2>
+   <h3>Overview</h3>
+   <p>Good</p>
+   <h3>Details</h3>
+   <p>Poor</p>
+   <h3>Utility</h3>
+   <p>Excellent</p>
+ </body>
+</html>
+'''
+    self.assertMultiLineEqual(out, chk)
+    out = tpl.render('text', params)
+    chk = '''\
+# TemplateAlchemy
+
+## Mako
+
+### Overview
+
+Good
+
+### Details
+
+Poor
+
+### Utility
+
+Excellent
+'''
+    self.assertMultiLineEqual(out, chk)
+    self.assertEqual(tpl.meta.formats, ['html', 'text'])
+
+  #----------------------------------------------------------------------------
   def test_sqlalchemy(self):
     # todo: what if templatealchemy is a zipped archive?...
     path = os.path.join(os.path.dirname(__file__), 'test_data/sa/source.db')

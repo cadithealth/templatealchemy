@@ -30,13 +30,14 @@ class PkgSource(api.Source):
   def getFormats(self):
     # todo: is there any way to replicate this pkg_resources functionality
     #       with pkgutil or some other standard library?...
-    path = os.path.dirname(self.path)
-    base = os.path.basename(self.path) + '.'
-    ret = []
-    for cur in pkg_resources.resource_listdir(self.module, path):
-      if cur.startswith(base):
-        ret.append(cur[len(base):])
-    return ret
+    path, base = os.path.split(self.path)
+    base += '.'
+    return [
+      cur[len(base):]
+      for cur in pkg_resources.resource_listdir(self.module, path)
+      if cur.startswith(base)
+      and not pkg_resources.resource_isdir(
+        self.module, os.path.join(path, cur))]
 
   #----------------------------------------------------------------------------
   def get(self, format):
