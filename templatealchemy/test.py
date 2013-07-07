@@ -48,21 +48,24 @@ class TestTemplateAlchemy(unittest.TestCase):
 </html>
 '''
     self.assertMultiLineEqual(out, chk)
+    self.assertEqual(tpl.meta.formats, ['html'])
 
   #----------------------------------------------------------------------------
   def test_mako(self):
     root = templatealchemy.Template(
       source='pkg:templatealchemy:test_data/mako',
-      renderer='mako')
+      renderer='mako',
+      extmap={'text': 'txt'})
     tpl = root.getTemplate('document')
-    out = tpl.render('html', adict(
-        title='TemplateAlchemy',
-        doc=adict(title='Mako'),
-        sections=[
-          adict(title='Overview', text='Good'),
-          adict(title='Details', text='Poor'),
-          adict(title='Utility', text='Excellent'),
-          ]))
+    params = adict(
+      title='TemplateAlchemy',
+      doc=adict(title='Mako'),
+      sections=[
+        adict(title='Overview', text='Good'),
+        adict(title='Details', text='Poor'),
+        adict(title='Utility', text='Excellent'),
+        ])
+    out = tpl.render('html', params)
     chk = '''\
 <html>
  <head>
@@ -81,6 +84,26 @@ class TestTemplateAlchemy(unittest.TestCase):
 </html>
 '''
     self.assertMultiLineEqual(out, chk)
+    out = tpl.render('text', params)
+    chk = '''\
+# TemplateAlchemy
+
+## Mako
+
+### Overview
+
+Good
+
+### Details
+
+Poor
+
+### Utility
+
+Excellent
+'''
+    self.assertMultiLineEqual(out, chk)
+    self.assertEqual(tpl.meta.formats, ['html', 'text'])
 
   #----------------------------------------------------------------------------
   def test_sqlalchemy(self):
@@ -92,7 +115,10 @@ class TestTemplateAlchemy(unittest.TestCase):
     tpl = root.getTemplate('document')
     out = tpl.render('html', adict(title='TemplateAlchemy'))
     chk = '<html><body><h1>TemplateAlchemy</h1></body></html>'
+    out = tpl.render('text', adict(title='TemplateAlchemy'))
+    chk = 'Title: TemplateAlchemy\n'
     self.assertMultiLineEqual(out, chk)
+    self.assertEqual(tpl.meta.formats, ['html', 'text'])
 
   #----------------------------------------------------------------------------
   def test_string(self):
@@ -102,6 +128,7 @@ class TestTemplateAlchemy(unittest.TestCase):
     outh = root.render('html', params)
     self.assertEqual(outt, 'ALL YOUR BASE ARE BELONG TO US')
     self.assertEqual(outh, 'ALL YOUR BASE ARE BELONG TO US')
+    self.assertEqual(root.meta.formats, [])
 
   #----------------------------------------------------------------------------
   def test_commandLine(self):
@@ -150,6 +177,20 @@ class TestTemplateAlchemy(unittest.TestCase):
 </html>
 '''
     self.assertMultiLineEqual(out.getvalue(), chk)
+
+  #----------------------------------------------------------------------------
+  def test_meta(self):
+    root = templatealchemy.Template(
+      source='pkg:templatealchemy:test_data/mustache',
+      renderer='mustache')
+    tpl = root.getTemplate('meta-simple')
+    self.assertEqual(tpl.meta.formats, [])
+    self.assertTrue('attachments' in tpl.meta)
+    self.assertEqual(len(tpl.meta.attachments), 2)
+    self.assertEqual(tpl.meta.attachments, [
+      dict(name='logo.txt', cid=True, content='My Logo'),
+      dict(name='logo.png', cid=True, content='\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x00\n\x00\x00\x00\n\x01\x03\x00\x00\x00\xb7\xfc]\xfe\x00\x00\x00\x06PLTE\xff\xff\xff\x00\x00\x00U\xc2\xd3~\x00\x00\x00\tpHYs\x00\x00\x0fa\x00\x00\x0fa\x01\xa8?\xa7i\x00\x00\x00\x07tIME\x07\xdd\x07\x07\x12\x04\x11\\\xfd\xd3\x10\x00\x00\x00 IDAT\x08\xd7c\xb0g`\xa8o`x{\x80\xe1\x0c\x18\xdd;\xc0\xf0\xff\x00\x88\x0b\x14\xb4g\x00\x00\xb8(\x0cL\xa6v\x1f\xd8\x00\x00\x00\x00IEND\xaeB`\x82'),
+      ])
 
 #------------------------------------------------------------------------------
 # end of $Id$
