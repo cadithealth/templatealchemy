@@ -4,8 +4,8 @@ TemplateAlchemy
 
 .. WARNING::
 
-  TemplateAlchemy is in its very early stages - you should come back
-  later.
+  2013/07/07: TemplateAlchemy is in its very early stages - you should
+  come back later.
 
 TemplateAlchemy aims to be to the fragmented world of templates what
 SQLAlchemy is to the world of databases: a generic abstraction for
