@@ -9,6 +9,7 @@
 
 from __future__ import absolute_import
 
+from StringIO import StringIO
 import sqlalchemy as sa
 from templatealchemy import api, util
 
@@ -46,13 +47,31 @@ class SaSource(api.Source):
       )
 
   #----------------------------------------------------------------------------
-  def get(self, format):
+  def _get(self, name, format):
     result = self.conn.execute(
       sa.sql
       .select([self.table.c.content])
-      .where(sa.sql.and_(self.table.c.name == self.name,
+      .where(sa.sql.and_(self.table.c.name == name,
                          self.table.c.format == format)))
-    return result.fetchone()[0]
+    return StringIO(result.fetchone()[0])
+
+  #----------------------------------------------------------------------------
+  def get(self, format):
+    return self._get(self.name, format)
+
+  #----------------------------------------------------------------------------
+  def getFormats(self):
+    result = self.conn.execute(
+      sa.sql
+      .select([self.table.c.format])
+      .where(sa.sql.and_(self.table.c.name == self.name)))
+    return [record[0] for record in result.fetchall()]
+
+  #----------------------------------------------------------------------------
+  def getRelated(self, name):
+    if name.startswith('/'):
+      return self._get(name[1:], None)
+    return self._get(os.path.dirname(self.name) + '/' + name, None)
 
 #------------------------------------------------------------------------------
 # end of $Id$
