@@ -2,3 +2,5 @@
   - sqlalchemy
   - mako
   - pystache
+
+- share the docs between README.rst and templatealchemy.api
