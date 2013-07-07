@@ -7,6 +7,7 @@
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
+import os.path
 from templatealchemy import api, util
 
 #------------------------------------------------------------------------------
@@ -24,10 +25,20 @@ class FileSource(api.Source):
   def getSource(self, name):
     return FileSource(self.path + '/' + name)
 
+  # #----------------------------------------------------------------------------
+  # def getFormats(self):
+  #   ...
+
   #----------------------------------------------------------------------------
   def get(self, format):
-    with open(self.path + '.' + format, 'rb') as fp:
-      return fp.read()
+    # todo: what about file descriptor clean-up?...
+    return open(self.path + '.' + format, 'rb')
+
+  #----------------------------------------------------------------------------
+  def getRelated(self, name):
+    if name.startswith('/'):
+      return open(name, 'rb')
+    return open(os.path.dirname(self.path) + '/' + name, 'rb')
 
 #------------------------------------------------------------------------------
 # end of $Id$
