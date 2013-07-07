@@ -27,10 +27,10 @@ class MakoRenderer(api.Renderer):
     self.filters = ['h']
 
   #----------------------------------------------------------------------------
-  def render(self, context, data, params):
+  def render(self, context, stream, params):
     # TODO: take advantage of mako's `TemplateLookup` class...
     tpl = mako.template.Template(
-      text=data, lookup=self.lookup, default_filters=self.filters)
+      text=stream.read(), lookup=self.lookup, default_filters=self.filters)
     return tpl.render(**params)
 
 #------------------------------------------------------------------------------

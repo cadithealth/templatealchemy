@@ -22,9 +22,9 @@ class MustacheRenderer(api.Renderer):
     self.spec = spec
 
   #----------------------------------------------------------------------------
-  def render(self, context, data, params):
+  def render(self, context, stream, params):
     # todo: do anything with `spec`?
-    return pystache.render(data, params)
+    return pystache.render(stream.read(), params)
 
 #------------------------------------------------------------------------------
 # end of $Id$
