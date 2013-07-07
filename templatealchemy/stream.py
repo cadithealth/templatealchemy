@@ -31,8 +31,16 @@ class StreamSource(api.Source):
     raise SyntaxError('`stream` sources do not support sub-sources')
 
   #----------------------------------------------------------------------------
+  def getFormats(self):
+    return []
+
+  #----------------------------------------------------------------------------
   def get(self, format):
-    return self.stream.read()
+    return self.stream
+
+  #----------------------------------------------------------------------------
+  def getRelated(self, name):
+    return None
 
 #------------------------------------------------------------------------------
 # end of $Id$

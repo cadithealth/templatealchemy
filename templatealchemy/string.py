@@ -7,6 +7,7 @@
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
+from StringIO import StringIO
 from templatealchemy import api, util
 
 #------------------------------------------------------------------------------
@@ -25,8 +26,16 @@ class StringSource(api.Source):
     raise SyntaxError('`string` sources do not support sub-sources')
 
   #----------------------------------------------------------------------------
+  def getFormats(self):
+    return []
+
+  #----------------------------------------------------------------------------
   def get(self, format):
-    return self.data
+    return StringIO(self.data)
+
+  #----------------------------------------------------------------------------
+  def getRelated(self, name):
+    return None
 
 #------------------------------------------------------------------------------
 # end of $Id$
