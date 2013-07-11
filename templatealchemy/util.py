@@ -7,6 +7,8 @@
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
+import inspect
+
 #------------------------------------------------------------------------------
 def resolve(spec):
   spec = spec.split('.')
@@ -50,6 +52,34 @@ class adict(dict):
     for key, val in ret.items():
       ret[key] = adict.__dict2adict__(val, True)
     return ret
+
+#------------------------------------------------------------------------------
+def callingPkgName(ignore=None):
+  if ignore is None:
+    ignore = []
+  elif isinstance(ignore, basestring):
+    ignore = [ignore]
+  else:
+    ignore = ignore[:]
+  ignore.append('templatealchemy')
+  ignore.append('ta')
+
+  stack = inspect.stack()
+  record = None
+  try:
+    for record in stack:
+      if not record or not record[0]:
+        continue
+      mod = inspect.getmodule(record[0])
+      if not mod:
+        continue
+      mod = getattr(mod, '__package__', None)
+      if mod not in ignore:
+        return mod
+    return None
+  finally:
+    del record
+    del stack
 
 #------------------------------------------------------------------------------
 # end of $Id$
