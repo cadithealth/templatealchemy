@@ -14,15 +14,17 @@ or implementation is used to render that data.
 
 In essence, the primary purpose of this package is to allow other
 packages that need templated data (such as the email generation
-package `genemail`) to remain un-opinionated about template format and
-source, while still providing useful higher-level functionality.
+package `genemail <https://pypi.python.org/pypi/genemail>`_) to remain
+un-opinionated about template format and source, while still providing
+useful higher-level functionality.
 
 By default, TemplateAlchemy uses pkgutil for template location
 (i.e. files from a package, either on the filesystem or in a zip
 archive) and Mako for rendering, but these settings are trivial to
 configure to use something else. For example, you may want to store
 templates in a database (with built-in support) and use the Jinja2
-rendering engine (supported via the templatealchemy-jinja2 package).
+rendering engine (supported via the `TemplateAlchemy-Jinja2
+<https://pypi.python.org/pypi/TemplateAlchemy-Jinja2>`_ package).
 
 
 TL;DR
