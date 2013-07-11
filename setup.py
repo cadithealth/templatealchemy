@@ -29,7 +29,7 @@ requires = [
   # TODO: make these only dependencies if they are actually wanted...
   'SQLAlchemy           >= 0.8.1',
   'Mako                 >= 0.7.2',
-  'MarkupSafe           >= 0.18',
+  'MarkupSafe           >= 0.15',
   'pystache             >= 0.5.3',
   # 'Markdown             >= 2.3.1',
   ]
