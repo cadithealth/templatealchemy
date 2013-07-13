@@ -142,6 +142,15 @@ class Template(object):
       self._meta = yaml.load(self.source.get('spec'), makeLoader(self.source))
       self._meta = util.adict.__dict2adict__(self._meta, recursive=True)
     else:
+      raw = self.source.get(formats[0]).read()
+      if '-*- spec -*-' in raw:
+        # TODO: generalize how the spec is defined... perhaps let the
+        #       active renderer do so?...
+        spec = re.search(r'-\*- spec -\*-(.*?)-\*- /spec -\*-', raw, flags=re.DOTALL)
+        if spec:
+          self._meta = yaml.load(spec.group(1).strip(), makeLoader(self.source))
+          self._meta = util.adict.__dict2adict__(self._meta, recursive=True)
+    if self._meta is None:
       self._meta = util.adict()
     self._meta.formats = [self.rextmap.get(fmt, fmt)
                           for fmt in formats if fmt != 'spec']
