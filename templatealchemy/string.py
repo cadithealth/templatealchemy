@@ -23,11 +23,11 @@ class StringSource(api.Source):
 
   #----------------------------------------------------------------------------
   def getSource(self, name):
-    raise SyntaxError('`string` sources do not support sub-sources')
+    return self
 
   #----------------------------------------------------------------------------
   def getFormats(self):
-    return []
+    return ['data']
 
   #----------------------------------------------------------------------------
   def get(self, format):

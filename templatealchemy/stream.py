@@ -28,11 +28,11 @@ class StreamSource(api.Source):
 
   #----------------------------------------------------------------------------
   def getSource(self, name):
-    raise SyntaxError('`stream` sources do not support sub-sources')
+    return self
 
   #----------------------------------------------------------------------------
   def getFormats(self):
-    return []
+    return ['data']
 
   #----------------------------------------------------------------------------
   def get(self, format):

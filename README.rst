@@ -178,10 +178,8 @@ The abstract interface for a TemplateAlchemy source is in
     def get(self, format):
       '''
       Returns the source content stream for the current template
-      source for the specified `format`. If `format` is None,
-      the "default" format (if applicable) should be returned.
-      The returned object must be a file-like object supporting
-      read access.
+      source for the specified `format`. The returned object must be a
+      file-like object supporting read access.
       '''
 
     def getSource(self, name):

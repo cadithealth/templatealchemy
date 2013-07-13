@@ -7,7 +7,7 @@
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-import os, yaml
+import os, yaml, re
 from . import util
 
 __all__ = ['Template', 'loadSource', 'loadRenderer']
@@ -54,7 +54,7 @@ class Template(object):
   # TODO: implement template caching?...
 
   #----------------------------------------------------------------------------
-  def __init__(self, source=None, renderer=None, extmap=None):
+  def __init__(self, source=None, renderer=None, extmap=None, fmtcmp=None):
     '''
     Construct a new top-level Template with the given `source` and
     `renderer`.
@@ -95,26 +95,41 @@ class Template(object):
       Note that the special format ``None`` (the symbol, not the
       string) can be used in this dictionary to refer to the default
       template. Generally speaking, it is acceptable to map *to* None,
-      but not *from* None to some other value -- the latter is
-      typically left to the source itself.
+      but not *from* None to some other value.
+
+    fmtcmp : callable, optional
+
+      Specify the format sorting comparison function, as passed into
+      the `cmp` parameter of the `sorted` function. The primary
+      consequence of this sorting is that the first format becomes the
+      default format. Application-specific logic is required to
+      provide a good default format. By default, the formats are
+      simply sorted alphabetically.
+
     '''
-    # TODO: if `source` is None default to caller's package...
     self.source   = loadSource(source)
     self.renderer = loadRenderer(renderer)
     self._meta    = None
     self.extmap   = extmap or dict()
     self.rextmap  = {val: key for key, val in self.extmap.items()}
+    # TODO: provide a better default sorter, something like:
+    #   xml > xhtml > html > yaml > json > ... > text > data
+    self.fmtcmp   = None
 
   #----------------------------------------------------------------------------
   def getTemplate(self, name):
+    # TODO: i need to move to a `Manager` type of approach so that
+    #       i only need to pass one parameter to sub-templates.
     return Template(self.source.getSource(name), self.renderer,
-                    extmap=self.extmap)
+                    extmap=self.extmap, fmtcmp=self.fmtcmp)
 
   #----------------------------------------------------------------------------
   def render(self, format, params):
     if format == 'spec':
       raise TypeError('format "spec" is reserved for internal TemplateAlchemy use')
     format = self.extmap.get(format, format)
+    if not format:
+      format = self.meta.formats[0]
     return self.renderer.render(None, self.source.get(format), params)
 
   #----------------------------------------------------------------------------
@@ -122,7 +137,7 @@ class Template(object):
   def meta(self):
     if self._meta is not None:
       return self._meta
-    formats = sorted(self.source.getFormats())
+    formats = sorted(self.source.getFormats(), cmp=self.fmtcmp)
     if 'spec' in formats:
       self._meta = yaml.load(self.source.get('spec'), makeLoader(self.source))
       self._meta = util.adict.__dict2adict__(self._meta, recursive=True)

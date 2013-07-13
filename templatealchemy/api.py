@@ -14,9 +14,8 @@ class Source(object):
   def get(self, format):
     '''
     Returns the source content stream for the current template source
-    for the specified `format`. If `format` is None, the "default"
-    format (if applicable) should be returned.  The returned object
-    must be a file-like object supporting read access.
+    for the specified `format`. The returned object must be a
+    file-like object supporting read access.
     '''
     raise NotImplementedError()
 

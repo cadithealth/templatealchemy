@@ -185,7 +185,7 @@ Excellent
     outh = root.render('html', params)
     self.assertEqual(outt, 'ALL YOUR BASE ARE BELONG TO US')
     self.assertEqual(outh, 'ALL YOUR BASE ARE BELONG TO US')
-    self.assertEqual(root.meta.formats, [])
+    self.assertEqual(root.meta.formats, ['data'])
 
   #----------------------------------------------------------------------------
   def test_commandLine(self):
