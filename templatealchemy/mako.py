@@ -10,28 +10,48 @@
 from __future__ import absolute_import
 
 import mako.template
-from templatealchemy import api, util
+from mako.lookup import TemplateLookup
+from templatealchemy import api, util, engine
 
 #------------------------------------------------------------------------------
 def loadRenderer(spec=None):
   return MakoRenderer(spec)
 
 #------------------------------------------------------------------------------
+class TaLookup(TemplateLookup):
+  # TODO: this is not very efficient in the case that building a source
+  #       is expensive...
+  def __init__(self, source, renderer):
+    self.source   = source
+    self.renderer = renderer
+  def adjust_uri(self, uri, relativeto):
+    return self.source.resolveUri(uri, relativeto)
+  def get_template(self, uri):
+    src = engine.loadSource(uri)
+    return self.ta_template(text=src.get('').read(), uri=uri)
+  def ta_template(self, **kw):
+    kw['lookup'] = self
+    kw['default_filters'] = self.renderer.filters
+    return mako.template.Template(**kw)
+
+#------------------------------------------------------------------------------
 class MakoRenderer(api.Renderer):
 
   #----------------------------------------------------------------------------
-  def __init__(self, spec):
+  def __init__(self, spec, *args, **kw):
+    super(MakoRenderer, self).__init__(self.ns('mako', spec), *args, **kw)
     # TODO: expose control of `mako.template.Template()` args/kwargs...
     self.spec = spec
-    self.lookup = None
     self.filters = ['h']
 
   #----------------------------------------------------------------------------
   def render(self, context, stream, params):
-    # TODO: take advantage of mako's `TemplateLookup` class...
-    tpl = mako.template.Template(
-      text=stream.read(), lookup=self.lookup, default_filters=self.filters)
-    return tpl.render(**params)
+    if context.makoLookup is None:
+      context.makoLookup = TaLookup(context.template.source, self)
+    return context.makoLookup.ta_template(
+      text = stream.read(),
+      uri  = context.template.source.uri,
+      ).render(**params)
 
 #------------------------------------------------------------------------------
 # end of $Id$
