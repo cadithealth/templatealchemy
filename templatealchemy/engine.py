@@ -9,6 +9,7 @@
 
 import os, yaml, re
 from . import util
+from .util import adict
 
 __all__ = ['Template', 'loadSource', 'loadRenderer']
 
@@ -106,14 +107,19 @@ class Template(object):
       provide a good default format. By default, the formats are
       simply sorted alphabetically.
 
+      @TODO: add smarter default sorting; something like formatted, then
+      structured, then semi-structured, then unstructured, then raw::
+
+        xml > xhtml > html > rst > yaml > json > ... > text > data
+
     '''
     self.source   = loadSource(source)
     self.renderer = loadRenderer(renderer)
+    self.context  = adict(template=self)
     self._meta    = None
     self.extmap   = extmap or dict()
     self.rextmap  = {val: key for key, val in self.extmap.items()}
-    # TODO: provide a better default sorter, something like:
-    #   xml > xhtml > html > yaml > json > ... > text > data
+    # TODO: provide a better default sorter -- see pydocs
     self.fmtcmp   = None
 
   #----------------------------------------------------------------------------
@@ -130,7 +136,7 @@ class Template(object):
     format = self.extmap.get(format, format)
     if not format:
       format = self.meta.formats[0]
-    return self.renderer.render(None, self.source.get(format), params)
+    return self.renderer.render(self.context, self.source.get(format), params)
 
   #----------------------------------------------------------------------------
   @property
@@ -140,7 +146,7 @@ class Template(object):
     formats = sorted(self.source.getFormats(), cmp=self.fmtcmp)
     if 'spec' in formats:
       self._meta = yaml.load(self.source.get('spec'), makeLoader(self.source))
-      self._meta = util.adict.__dict2adict__(self._meta, recursive=True)
+      self._meta = adict.__dict2adict__(self._meta, recursive=True)
     else:
       raw = self.source.get(formats[0]).read()
       if '-*- spec -*-' in raw:
@@ -149,9 +155,9 @@ class Template(object):
         spec = re.search(r'-\*- spec -\*-(.*?)-\*- /spec -\*-', raw, flags=re.DOTALL)
         if spec:
           self._meta = yaml.load(spec.group(1).strip(), makeLoader(self.source))
-          self._meta = util.adict.__dict2adict__(self._meta, recursive=True)
+          self._meta = adict.__dict2adict__(self._meta, recursive=True)
     if self._meta is None:
-      self._meta = util.adict()
+      self._meta = adict()
     self._meta.formats = [self.rextmap.get(fmt, fmt)
                           for fmt in formats if fmt != 'spec']
     return self._meta
