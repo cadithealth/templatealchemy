@@ -22,8 +22,9 @@ class SaSource(api.Source):
 
   #----------------------------------------------------------------------------
   def __init__(self, spec, name='', tablename=None,
-               engine=None, connection=None, table=None, metadata=None
-               ):
+               engine=None, connection=None, table=None, metadata=None,
+               *args, **kw):
+    super(SaSource, self).__init__(self.ns('sqlalchemy', spec), *args, **kw)
     self.spec = spec
     self.name = name
     self.engine   = engine or sa.create_engine(spec)

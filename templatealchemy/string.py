@@ -18,7 +18,8 @@ def loadSource(spec=None):
 class StringSource(api.Source):
 
   #----------------------------------------------------------------------------
-  def __init__(self, spec):
+  def __init__(self, spec, *args, **kw):
+    super(StringSource, self).__init__(self.ns('string', spec), *args, **kw)
     self.data = spec
 
   #----------------------------------------------------------------------------

@@ -18,7 +18,8 @@ def loadSource(spec=None):
 class FileSource(api.Source):
 
   #----------------------------------------------------------------------------
-  def __init__(self, spec):
+  def __init__(self, spec, *args, **kw):
+    super(FileSource, self).__init__(self.ns('file', spec), *args, **kw)
     self.path = spec
 
   #----------------------------------------------------------------------------
@@ -37,7 +38,9 @@ class FileSource(api.Source):
   #----------------------------------------------------------------------------
   def get(self, format):
     # todo: what about file descriptor clean-up?...
-    return open(self.path + '.' + format, 'rb')
+    if format:
+      format = '.' + format
+    return open(self.path + format, 'rb')
 
   #----------------------------------------------------------------------------
   def getRelated(self, name):

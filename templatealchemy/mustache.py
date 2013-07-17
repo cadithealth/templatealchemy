@@ -18,7 +18,8 @@ def loadRenderer(spec=None):
 class MustacheRenderer(api.Renderer):
 
   #----------------------------------------------------------------------------
-  def __init__(self, spec):
+  def __init__(self, spec, *args, **kw):
+    super(MustacheRenderer, self).__init__(self.ns('mustache', spec), *args, **kw)
     self.spec = spec
 
   #----------------------------------------------------------------------------

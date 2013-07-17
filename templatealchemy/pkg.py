@@ -19,7 +19,8 @@ def loadSource(spec=None):
 class PkgSource(api.Source):
 
   #----------------------------------------------------------------------------
-  def __init__(self, spec):
+  def __init__(self, spec, *args, **kw):
+    super(PkgSource, self).__init__(self.ns('pkg', spec), *args, **kw)
     self.module, self.path = spec.split(':', 1)
 
   #----------------------------------------------------------------------------
@@ -41,7 +42,9 @@ class PkgSource(api.Source):
 
   #----------------------------------------------------------------------------
   def get(self, format):
-    return StringIO(pkgutil.get_data(self.module, self.path + '.' + format))
+    if format:
+      format = '.' + format
+    return StringIO(pkgutil.get_data(self.module, self.path + format))
 
   #----------------------------------------------------------------------------
   def getRelated(self, name):
