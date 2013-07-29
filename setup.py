@@ -42,7 +42,7 @@ entrypoints = {
 
 setup(
   name                  = 'TemplateAlchemy',
-  version               = '0.1.11',
+  version               = '0.1.12',
   description           = 'An un-opinionated template abstraction layer',
   long_description      = README,
   classifiers           = [
@@ -60,7 +60,7 @@ setup(
   url                   = 'http://github.com/cadithealth/templatealchemy',
   keywords              = 'template unopinionated abstraction layer sqlalchemy mako mustache',
   packages              = find_packages(),
-  namespace_packages    = ['templatealchemy', 'templatealchemy.driver'],
+  namespace_packages    = ['templatealchemy_driver'],
   include_package_data  = True,
   zip_safe              = True,
   install_requires      = requires,
