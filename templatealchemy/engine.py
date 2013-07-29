@@ -11,7 +11,7 @@ import os, yaml, re
 from . import util
 from .util import adict
 
-__all__ = ('Template', 'loadSource', 'loadRenderer')
+__all__ = ('Manager', 'Template', 'loadSource', 'loadRenderer')
 
 #------------------------------------------------------------------------------
 def loadSource(spec):
@@ -161,6 +161,12 @@ class Template(object):
     self._meta.formats = [self.rextmap.get(fmt, fmt)
                           for fmt in formats if fmt != 'spec']
     return self._meta
+
+#------------------------------------------------------------------------------
+# TODO: the `Template` class behaves like a manager, so aliasing them... this
+#       is probably not "right", but will do for now. eventually, this should
+#       be corrected.
+Manager = Template
 
 #------------------------------------------------------------------------------
 # end of $Id$
