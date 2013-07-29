@@ -9,7 +9,7 @@
 
 import sys, argparse, yaml, os.path
 from . import engine
-from .driver import stream
+from templatealchemy_driver import stream
 
 #------------------------------------------------------------------------------
 def main(args=None, output=None):
