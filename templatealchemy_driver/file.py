@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # file: $Id$
-# lib:  templatealchemy.driver.file
+# lib:  templatealchemy_driver.file
 # auth: Philip J Grabner <grabner@cadit.com>
 # date: 2013/07/03
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.

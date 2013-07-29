@@ -1,61 +1,58 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # file: $Id$
-# lib:  templatealchemy.driver.stream
+# lib:  templatealchemy_driver.pkg
 # auth: Philip J Grabner <grabner@cadit.com>
-# date: 2013/07/05
+# date: 2013/07/03
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-'''
-A TemplateAlchemy source that gets the template source from a
-file-like object. Note that the file is by default buffered into
-memory (so that it can be served multiple times) -- see the
-`replayable` constructor parameter (but be aware that setting this to
-False could break applications that depend on loading the same
-template multiple times with different parameters for discovery
-purposes).
-'''
-
-# todo: really, any system that expects to be able to call a template
-#       multiple times should do the buffering itself... perhaps
-#       provide a helper routine to make this easier somehow?...
-
+import pkgutil, pkg_resources, os.path
 from StringIO import StringIO
 from templatealchemy import api, util
 
 #------------------------------------------------------------------------------
 def loadSource(spec=None):
-  return StreamSource(spec)
+  return PkgSource(spec)
 
 #------------------------------------------------------------------------------
-class StreamSource(api.Source):
+class PkgSource(api.Source):
 
   #----------------------------------------------------------------------------
-  def __init__(self, spec, replayable=True, *args, **kw):
-    super(StreamSource, self).__init__(self.ns('stream', repr(spec)), *args, **kw)
-    self.stream  = spec
-    self._buffer = replayable
+  def __init__(self, spec, *args, **kw):
+    super(PkgSource, self).__init__(self.ns('pkg', spec), *args, **kw)
+    self.module, self.path = spec.split(':', 1)
 
   #----------------------------------------------------------------------------
   def getSource(self, name):
-    return self
+    return PkgSource(self.module + ':' + self.path + '/' + name)
 
   #----------------------------------------------------------------------------
   def getFormats(self):
-    return ['data']
+    # todo: is there any way to replicate this pkg_resources functionality
+    #       with pkgutil or some other standard library?...
+    path, base = os.path.split(self.path)
+    base += '.'
+    return [
+      cur[len(base):]
+      for cur in pkg_resources.resource_listdir(self.module, path)
+      if cur.startswith(base)
+      and not pkg_resources.resource_isdir(
+        self.module, os.path.join(path, cur))]
 
   #----------------------------------------------------------------------------
   def get(self, format):
-    if self._buffer is False:
-      return self.stream
-    if self._buffer is None or self._buffer is True:
-      self._buffer = self.stream.read()
-    return StringIO(self._buffer)
+    if format:
+      format = '.' + format
+    return StringIO(pkgutil.get_data(self.module, self.path + format))
 
   #----------------------------------------------------------------------------
   def getRelated(self, name):
-    return None
+    if name.startswith('/'):
+      name = name[1:]
+    else:
+      name = os.path.dirname(self.path) + '/' + name
+    return StringIO(pkgutil.get_data(self.module, name))
 
 #------------------------------------------------------------------------------
 # end of $Id$

@@ -21,7 +21,7 @@ def loadSource(spec):
   if not isinstance(spec, basestring):
     return spec
   spec = spec.split(':', 1)
-  loader = util.resolve('templatealchemy.driver.' + spec.pop(0) + '.loadSource')
+  loader = util.resolve('templatealchemy_driver.' + spec.pop(0) + '.loadSource')
   return loader(spec.pop(0) if spec else None)
 
 #------------------------------------------------------------------------------
@@ -32,7 +32,7 @@ def loadRenderer(spec):
   if not isinstance(spec, basestring):
     return spec
   spec = spec.split(':', 1)
-  loader = util.resolve('templatealchemy.driver.' + spec.pop(0) + '.loadRenderer')
+  loader = util.resolve('templatealchemy_driver.' + spec.pop(0) + '.loadRenderer')
   return loader(spec.pop(0) if spec else None)
 
 #------------------------------------------------------------------------------
