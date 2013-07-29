@@ -42,7 +42,7 @@ entrypoints = {
 
 setup(
   name                  = 'TemplateAlchemy',
-  version               = '0.1.12',
+  version               = '0.1.13',
   description           = 'An un-opinionated template abstraction layer',
   long_description      = README,
   classifiers           = [
