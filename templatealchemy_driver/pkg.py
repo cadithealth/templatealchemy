@@ -25,6 +25,8 @@ class PkgSource(api.Source):
 
   #----------------------------------------------------------------------------
   def getSource(self, name):
+    if name is None:
+      return self
     return PkgSource(self.module + ':' + self.path + '/' + name)
 
   #----------------------------------------------------------------------------

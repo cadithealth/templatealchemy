@@ -41,6 +41,8 @@ class SaSource(api.Source):
 
   #----------------------------------------------------------------------------
   def getSource(self, name):
+    if name is None:
+      return self
     return SaSource(
       self.spec, name=self.name + '/' + name if self.name else name,
       engine=self.engine, metadata=self.metadata, table=self.table,

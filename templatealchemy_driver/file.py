@@ -24,6 +24,8 @@ class FileSource(api.Source):
 
   #----------------------------------------------------------------------------
   def getSource(self, name):
+    if name is None:
+      return self
     return FileSource(self.path + '/' + name)
 
   #----------------------------------------------------------------------------
