@@ -4,7 +4,7 @@ TemplateAlchemy
 
 .. WARNING::
 
-  2013/07/07: TemplateAlchemy is in its very early stages - you should
+  2013/07/29: TemplateAlchemy is in its very early stages - you should
   come back later.
 
 TemplateAlchemy aims to be to the fragmented world of templates what
@@ -40,10 +40,10 @@ Use:
 
 .. code-block:: python
 
-  import templatealchemy as TA
+  import templatealchemy as ta
 
-  # create a top-level template
-  root = TA.Template(
+  # create a top-level template manager
+  root = ta.Manager(
     source = 'pkg:mypackagename:lib/templates',
     renderer = 'mako',
     )
@@ -240,8 +240,8 @@ The following code will pass the assert:
 
 .. code-block:: python
 
-  import templatealchemy as TA
-  root = TA.Template(source='file:/myroot', renderer='mustache')
+  import templatealchemy as ta
+  root = ta.Manager(source='file:/myroot', renderer='mustache')
   bar  = root.getTemplate('foo/bar')
 
   assert(bar.render('text', dict(name='Joe')) == 'Name is Joe')
@@ -279,9 +279,9 @@ The following code will pass the assert:
 
 .. code-block:: python
 
-  import templatealchemy as TA
-  root = TA.Template(source='sqlalchemy:sqlite:////var/lib/templates.db',
-                     renderer='mustache')
+  import templatealchemy as ta
+  root = ta.Manager(source='sqlalchemy:sqlite:////var/lib/templates.db',
+                    renderer='mustache')
   bar  = root.getTemplate('foo/bar')
 
   assert(bar.render('text', dict(name='Joe')) == 'Name is Joe')
