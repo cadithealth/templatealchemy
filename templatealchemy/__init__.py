@@ -7,15 +7,8 @@
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-try:
-  __import__('pkg_resources').declare_namespace(__name__)
-except ImportError:
-  __path__ = __import__('pkgutil').extend_path(__path__, __name__)
-
-try:
-  from templatealchemy.engine import *
-except ImportError:
-  pass
+from templatealchemy.engine import *
+from templatealchemy.api import *
 
 #------------------------------------------------------------------------------
 # end of $Id$

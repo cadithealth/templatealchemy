@@ -8,7 +8,8 @@
 #------------------------------------------------------------------------------
 
 import sys, argparse, yaml, os.path
-from . import engine, stream
+from . import engine
+from .driver import stream
 
 #------------------------------------------------------------------------------
 def main(args=None, output=None):

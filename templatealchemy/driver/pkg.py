@@ -1,52 +1,58 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # file: $Id$
-# lib:  templatealchemy.file
+# lib:  templatealchemy.driver.pkg
 # auth: Philip J Grabner <grabner@cadit.com>
 # date: 2013/07/03
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-import os
+import pkgutil, pkg_resources, os.path
+from StringIO import StringIO
 from templatealchemy import api, util
 
 #------------------------------------------------------------------------------
 def loadSource(spec=None):
-  return FileSource(spec)
+  return PkgSource(spec)
 
 #------------------------------------------------------------------------------
-class FileSource(api.Source):
+class PkgSource(api.Source):
 
   #----------------------------------------------------------------------------
   def __init__(self, spec, *args, **kw):
-    super(FileSource, self).__init__(self.ns('file', spec), *args, **kw)
-    self.path = spec
+    super(PkgSource, self).__init__(self.ns('pkg', spec), *args, **kw)
+    self.module, self.path = spec.split(':', 1)
 
   #----------------------------------------------------------------------------
   def getSource(self, name):
-    return FileSource(self.path + '/' + name)
+    return PkgSource(self.module + ':' + self.path + '/' + name)
 
   #----------------------------------------------------------------------------
   def getFormats(self):
+    # todo: is there any way to replicate this pkg_resources functionality
+    #       with pkgutil or some other standard library?...
     path, base = os.path.split(self.path)
     base += '.'
     return [
       cur[len(base):]
-      for cur in os.listdir(path)
-      if cur.startswith(base) and os.path.isfile(os.path.join(path, cur))]
+      for cur in pkg_resources.resource_listdir(self.module, path)
+      if cur.startswith(base)
+      and not pkg_resources.resource_isdir(
+        self.module, os.path.join(path, cur))]
 
   #----------------------------------------------------------------------------
   def get(self, format):
-    # todo: what about file descriptor clean-up?...
     if format:
       format = '.' + format
-    return open(self.path + format, 'rb')
+    return StringIO(pkgutil.get_data(self.module, self.path + format))
 
   #----------------------------------------------------------------------------
   def getRelated(self, name):
     if name.startswith('/'):
-      return open(name, 'rb')
-    return open(os.path.dirname(self.path) + '/' + name, 'rb')
+      name = name[1:]
+    else:
+      name = os.path.dirname(self.path) + '/' + name
+    return StringIO(pkgutil.get_data(self.module, name))
 
 #------------------------------------------------------------------------------
 # end of $Id$

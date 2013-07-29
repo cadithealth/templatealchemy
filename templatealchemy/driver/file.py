@@ -1,57 +1,52 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # file: $Id$
-# lib:  templatealchemy.stream
+# lib:  templatealchemy.driver.file
 # auth: Philip J Grabner <grabner@cadit.com>
-# date: 2013/07/05
+# date: 2013/07/03
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-'''
-A TemplateAlchemy source that gets the template source from a
-file-like object. Note that the file is by default buffered into
-memory (so that it can be served multiple times) -- see the
-`
-'''
-
-# todo: really, any system that expects to be able to call a template
-#       multiple times should do the buffering itself...
-
-from StringIO import StringIO
+import os
 from templatealchemy import api, util
 
 #------------------------------------------------------------------------------
 def loadSource(spec=None):
-  return StreamSource(spec)
+  return FileSource(spec)
 
 #------------------------------------------------------------------------------
-class StreamSource(api.Source):
+class FileSource(api.Source):
 
   #----------------------------------------------------------------------------
-  def __init__(self, spec, replayable=True, *args, **kw):
-    super(StreamSource, self).__init__(self.ns('stream', repr(spec)), *args, **kw)
-    self.stream  = spec
-    self._buffer = replayable
+  def __init__(self, spec, *args, **kw):
+    super(FileSource, self).__init__(self.ns('file', spec), *args, **kw)
+    self.path = spec
 
   #----------------------------------------------------------------------------
   def getSource(self, name):
-    return self
+    return FileSource(self.path + '/' + name)
 
   #----------------------------------------------------------------------------
   def getFormats(self):
-    return ['data']
+    path, base = os.path.split(self.path)
+    base += '.'
+    return [
+      cur[len(base):]
+      for cur in os.listdir(path)
+      if cur.startswith(base) and os.path.isfile(os.path.join(path, cur))]
 
   #----------------------------------------------------------------------------
   def get(self, format):
-    if self._buffer is False:
-      return self.stream
-    if self._buffer is None or self._buffer is True:
-      self._buffer = self.stream.read()
-    return StringIO(self._buffer)
+    # todo: what about file descriptor clean-up?...
+    if format:
+      format = '.' + format
+    return open(self.path + format, 'rb')
 
   #----------------------------------------------------------------------------
   def getRelated(self, name):
-    return None
+    if name.startswith('/'):
+      return open(name, 'rb')
+    return open(os.path.dirname(self.path) + '/' + name, 'rb')
 
 #------------------------------------------------------------------------------
 # end of $Id$

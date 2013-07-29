@@ -1,42 +1,31 @@
 # -*- coding: utf-8 -*-
 #------------------------------------------------------------------------------
 # file: $Id$
-# lib:  templatealchemy.string
+# lib:  templatealchemy.driver.mustache
 # auth: Philip J Grabner <grabner@cadit.com>
 # date: 2013/07/03
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-from StringIO import StringIO
+import pystache
 from templatealchemy import api, util
 
 #------------------------------------------------------------------------------
-def loadSource(spec=None):
-  return StringSource(spec)
+def loadRenderer(spec=None):
+  return MustacheRenderer(spec)
 
 #------------------------------------------------------------------------------
-class StringSource(api.Source):
+class MustacheRenderer(api.Renderer):
 
   #----------------------------------------------------------------------------
   def __init__(self, spec, *args, **kw):
-    super(StringSource, self).__init__(self.ns('string', spec), *args, **kw)
-    self.data = spec
+    super(MustacheRenderer, self).__init__(self.ns('mustache', spec), *args, **kw)
+    self.spec = spec
 
   #----------------------------------------------------------------------------
-  def getSource(self, name):
-    return self
-
-  #----------------------------------------------------------------------------
-  def getFormats(self):
-    return ['data']
-
-  #----------------------------------------------------------------------------
-  def get(self, format):
-    return StringIO(self.data)
-
-  #----------------------------------------------------------------------------
-  def getRelated(self, name):
-    return None
+  def render(self, context, stream, params):
+    # todo: do anything with `self.spec`?
+    return pystache.render(stream.read(), params)
 
 #------------------------------------------------------------------------------
 # end of $Id$
