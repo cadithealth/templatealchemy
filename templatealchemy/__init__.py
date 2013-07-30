@@ -8,6 +8,7 @@
 
 from templatealchemy.engine import *
 from templatealchemy.api import *
+from templatealchemy.registry import *
 
 #------------------------------------------------------------------------------
 # end of $Id$
