@@ -4,3 +4,6 @@
   - pystache
 
 - share the docs between README.rst and templatealchemy.api
+
+- allow per-format rendering specs... eg:
+    templatealchemy.registry.default.renderer = '{html: mako, text: mustache}'
