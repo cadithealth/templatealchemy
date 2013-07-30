@@ -130,6 +130,10 @@ class Template(object):
                     extmap=self.extmap, fmtcmp=self.fmtcmp)
 
   #----------------------------------------------------------------------------
+  def __getitem__(self, name):
+    return self.getTemplate(name)
+
+  #----------------------------------------------------------------------------
   def render(self, format, params):
     if format == 'spec':
       raise TypeError('format "spec" is reserved for internal TemplateAlchemy use')
