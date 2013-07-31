@@ -57,8 +57,17 @@ class Registry(object):
     return self.managers.get(name, self.default)
 
   #----------------------------------------------------------------------------
+  def set(self, name, manager):
+    self.managers[name] = manager
+    return self
+
+  #----------------------------------------------------------------------------
   def __getitem__(self, name):
     return self.get(name)
+
+  #----------------------------------------------------------------------------
+  def __setitem__(self, name, manager):
+    return self.set(name, manager)
 
 #------------------------------------------------------------------------------
 # end of $Id$
