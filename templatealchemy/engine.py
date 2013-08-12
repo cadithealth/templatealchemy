@@ -8,7 +8,7 @@
 #------------------------------------------------------------------------------
 
 import os, yaml, re
-from . import util
+from . import util, api
 from .util import adict, isstr
 
 __all__ = ('Manager', 'Template', 'loadSource', 'loadRenderer')
@@ -125,14 +125,11 @@ class Template(object):
     self.context  = adict(template=self)
     self._meta    = None
     self.extmap   = extmap or dict()
-
-    # self.rextmap  = {val: key for key, val in self.extmap.items()}
     self.rextmap  = dict()
     for key, val in self.extmap.items():
       if val not in self.rextmap:
         self.rextmap[val] = []
       self.rextmap[val].append(key)
-
     # TODO: provide a better default sorter -- see pydocs
     self.fmtcmp   = None
 
@@ -140,12 +137,14 @@ class Template(object):
   def getTemplate(self, source):
     '''
     Loads the sub-template `source` within the context of the current
-    template and/or manager. If `source` is a string, then the sub-template
-    is hierarchically loaded from the current source. If `source` is a
-    :class:`templatealchemy.api.Source`, then it is used as the source for
-    the returned template.
+    template and/or manager.  If `source` is a
+    :class:`templatealchemy.api.Source`, then it is used as the source
+    for the returned template.  Otherwise, `source` is assumed to be a
+    string, and the sub-template is hierarchically loaded from the
+    current source.
+
     '''
-    if isstr(source):
+    if not isinstance(source, api.Source):
       source = self.source.getSource(source)
     # TODO: i need to move to a `Manager` type of approach so that
     #       i only need to pass one parameter to sub-templates.
