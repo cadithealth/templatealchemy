@@ -143,13 +143,14 @@ class Template(object):
     return self.getTemplate(name)
 
   #----------------------------------------------------------------------------
-  def render(self, format, params):
+  def render(self, format, params=None):
     if format == 'spec':
       raise TypeError('format "spec" is reserved for internal TemplateAlchemy use')
     format = self.extmap.get(format, format)
     if not format:
       format = self.meta.formats[0]
-    return self.renderer.render(self.context, self.source.get(format), params)
+    return self.renderer.render(self.context, self.source.get(format),
+                                params or dict())
 
   #----------------------------------------------------------------------------
   @property
