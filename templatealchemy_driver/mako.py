@@ -9,7 +9,7 @@
 
 from __future__ import absolute_import
 
-import mako.template
+import mako.template, yaml
 from mako.lookup import TemplateLookup
 from templatealchemy import api, util, engine
 
@@ -31,7 +31,7 @@ class TaLookup(TemplateLookup):
     return self.ta_template(text=src.get('').read(), uri=uri)
   def ta_template(self, **kw):
     kw['lookup'] = self
-    kw['default_filters'] = self.renderer.filters
+    kw.update(self.renderer.params)
     return mako.template.Template(**kw)
 
 #------------------------------------------------------------------------------
@@ -40,8 +40,7 @@ class MakoRenderer(api.Renderer):
   #----------------------------------------------------------------------------
   def __init__(self, *args, **kw):
     super(MakoRenderer, self).__init__(*args, **kw)
-    # TODO: expose control of `mako.template.Template()` args/kwargs...
-    self.filters = ['h']
+    self.params = yaml.load(self.spec or '{default_filters: ["h"]}')
 
   #----------------------------------------------------------------------------
   def render(self, context, stream, params):
