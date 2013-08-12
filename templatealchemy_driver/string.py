@@ -18,11 +18,6 @@ def loadSource(spec=None):
 class StringSource(api.Source):
 
   #----------------------------------------------------------------------------
-  def __init__(self, spec, *args, **kw):
-    super(StringSource, self).__init__(self.ns('string', spec), *args, **kw)
-    self.data = spec
-
-  #----------------------------------------------------------------------------
   def getSource(self, name):
     return self
 
@@ -32,7 +27,7 @@ class StringSource(api.Source):
 
   #----------------------------------------------------------------------------
   def get(self, format):
-    return StringIO(self.data)
+    return StringIO(self.spec)
 
   #----------------------------------------------------------------------------
   def getRelated(self, name):

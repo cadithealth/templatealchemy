@@ -33,7 +33,7 @@ class StreamSource(api.Source):
 
   #----------------------------------------------------------------------------
   def __init__(self, spec, replayable=True, *args, **kw):
-    super(StreamSource, self).__init__(self.ns('stream', repr(spec)), *args, **kw)
+    super(StreamSource, self).__init__(repr(spec), *args, **kw)
     self.stream  = spec
     self._buffer = replayable
 

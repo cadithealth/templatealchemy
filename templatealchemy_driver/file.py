@@ -18,19 +18,14 @@ def loadSource(spec=None):
 class FileSource(api.Source):
 
   #----------------------------------------------------------------------------
-  def __init__(self, spec, *args, **kw):
-    super(FileSource, self).__init__(self.ns('file', spec), *args, **kw)
-    self.path = spec
-
-  #----------------------------------------------------------------------------
   def getSource(self, name):
     if name is None:
       return self
-    return FileSource(self.path + '/' + name)
+    return FileSource(self.spec + '/' + name)
 
   #----------------------------------------------------------------------------
   def getFormats(self):
-    path, base = os.path.split(self.path)
+    path, base = os.path.split(self.spec)
     base += '.'
     return [
       cur[len(base):]
@@ -42,13 +37,13 @@ class FileSource(api.Source):
     # todo: what about file descriptor clean-up?...
     if format:
       format = '.' + format
-    return open(self.path + format, 'rb')
+    return open(self.spec + format, 'rb')
 
   #----------------------------------------------------------------------------
   def getRelated(self, name):
     if name.startswith('/'):
       return open(name, 'rb')
-    return open(os.path.dirname(self.path) + '/' + name, 'rb')
+    return open(os.path.dirname(self.spec) + '/' + name, 'rb')
 
 #------------------------------------------------------------------------------
 # end of $Id$

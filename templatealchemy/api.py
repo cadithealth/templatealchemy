@@ -12,11 +12,27 @@ import os.path
 __all__ = ('Source', 'Renderer')
 
 #------------------------------------------------------------------------------
-class Source(object):
+class Driver(object):
 
   #----------------------------------------------------------------------------
-  def __init__(self, uri, *args, **kw):
-    self.uri = uri
+  def __init__(self, spec=None, *args, **kw):
+    super(Driver, self).__init__(*args, **kw)
+    self.spec = spec
+
+  #----------------------------------------------------------------------------
+  @property
+  def uri(self):
+    ret = self.__class__.__module__.split('.')
+    ret = '.'.join(ret[1 if ret[0] == 'templatealchemy_driver' else 0:])
+    return ':'.join(filter(None, [ret, self.spec]))
+
+  #----------------------------------------------------------------------------
+  def resolveUri(self, uri, base=None):
+    return os.path.normpath(
+      os.path.join(os.path.dirname(base or self.uri), uri))
+
+#------------------------------------------------------------------------------
+class Source(Driver):
 
   #----------------------------------------------------------------------------
   def get(self, format):
@@ -55,23 +71,8 @@ class Source(object):
     '''
     raise NotImplementedError()
 
-  #----------------------------------------------------------------------------
-  def ns(self, scheme, spec):
-    if not spec:
-      return scheme
-    return scheme + ':' + spec
-
-  #----------------------------------------------------------------------------
-  def resolveUri(self, uri, base=None):
-    return os.path.normpath(
-      os.path.join(os.path.dirname(base or self.uri), uri))
-
 #------------------------------------------------------------------------------
-class Renderer(object):
-
-  #----------------------------------------------------------------------------
-  def __init__(self, uri, *args, **kw):
-    self.uri = uri
+class Renderer(Driver):
 
   #----------------------------------------------------------------------------
   def render(self, context, stream, params):
@@ -88,12 +89,6 @@ class Renderer(object):
     point.
     '''
     raise NotImplementedError()
-
-  #----------------------------------------------------------------------------
-  def ns(self, scheme, spec):
-    if not spec:
-      return scheme
-    return scheme + ':' + spec
 
 #------------------------------------------------------------------------------
 # end of $Id$

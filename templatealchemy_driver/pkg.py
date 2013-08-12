@@ -19,15 +19,15 @@ def loadSource(spec=None):
 class PkgSource(api.Source):
 
   #----------------------------------------------------------------------------
-  def __init__(self, spec, *args, **kw):
-    super(PkgSource, self).__init__(self.ns('pkg', spec), *args, **kw)
-    self.module, self.path = spec.split(':', 1)
+  def __init__(self, *args, **kw):
+    super(PkgSource, self).__init__(*args, **kw)
+    self.module, self.path = self.spec.split(':', 1)
 
   #----------------------------------------------------------------------------
   def getSource(self, name):
     if name is None:
       return self
-    return PkgSource(self.module + ':' + self.path + '/' + name)
+    return PkgSource(self.spec + '/' + name)
 
   #----------------------------------------------------------------------------
   def getFormats(self):

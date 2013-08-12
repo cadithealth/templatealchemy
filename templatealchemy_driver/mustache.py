@@ -17,14 +17,10 @@ def loadRenderer(spec=None):
 #------------------------------------------------------------------------------
 class MustacheRenderer(api.Renderer):
 
-  #----------------------------------------------------------------------------
-  def __init__(self, spec, *args, **kw):
-    super(MustacheRenderer, self).__init__(self.ns('mustache', spec), *args, **kw)
-    self.spec = spec
+  # todo: any customizations to load from `self.spec`?...
 
   #----------------------------------------------------------------------------
   def render(self, context, stream, params):
-    # todo: do anything with `self.spec`?
     return pystache.render(stream.read(), params)
 
 #------------------------------------------------------------------------------

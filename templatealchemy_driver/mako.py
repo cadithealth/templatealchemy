@@ -38,10 +38,9 @@ class TaLookup(TemplateLookup):
 class MakoRenderer(api.Renderer):
 
   #----------------------------------------------------------------------------
-  def __init__(self, spec, *args, **kw):
-    super(MakoRenderer, self).__init__(self.ns('mako', spec), *args, **kw)
+  def __init__(self, *args, **kw):
+    super(MakoRenderer, self).__init__(*args, **kw)
     # TODO: expose control of `mako.template.Template()` args/kwargs...
-    self.spec = spec
     self.filters = ['h']
 
   #----------------------------------------------------------------------------
