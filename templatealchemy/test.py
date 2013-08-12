@@ -51,6 +51,17 @@ class TestTemplateAlchemy(unittest.TestCase):
     self.assertEqual(tpl.meta.formats, ['html'])
 
   #----------------------------------------------------------------------------
+  def test_extmap(self):
+    root = templatealchemy.Template(
+      source='pkg:templatealchemy:test_data/mustache',
+      renderer='mustache',
+      extmap={'html': 'mako', 'text': 'mako.txt', 'csv': 'mako.txt'})
+    tpl = root.getTemplate('doc2')
+    self.assertEqual(tpl.render('html'), 'html\n')
+    self.assertEqual(tpl.render('text'), 'text\n')
+    self.assertEqual(tpl.render('csv'), 'text\n')
+
+  #----------------------------------------------------------------------------
   def test_mako(self):
     root = templatealchemy.Template(
       source='pkg:templatealchemy:test_data/mako',
