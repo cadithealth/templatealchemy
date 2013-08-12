@@ -98,6 +98,13 @@ class Template(object):
       template. Generally speaking, it is acceptable to map *to* None,
       but not *from* None to some other value.
 
+      Note also that it is best to keep this mapping a one-to-one
+      relationship, but it is nonetheless possible to map multiple
+      declared extensions to the same filesystem extension. For
+      example, both formats 'html' and 'text' could map to extension
+      'mako' -- the same template would then be used to render both
+      formats.
+
     fmtcmp : callable, optional
 
       Specify the format sorting comparison function, as passed into
@@ -118,7 +125,14 @@ class Template(object):
     self.context  = adict(template=self)
     self._meta    = None
     self.extmap   = extmap or dict()
-    self.rextmap  = {val: key for key, val in self.extmap.items()}
+
+    # self.rextmap  = {val: key for key, val in self.extmap.items()}
+    self.rextmap  = dict()
+    for key, val in self.extmap.items():
+      if val not in self.rextmap:
+        self.rextmap[val] = []
+      self.rextmap[val].append(key)
+
     # TODO: provide a better default sorter -- see pydocs
     self.fmtcmp   = None
 
@@ -172,8 +186,9 @@ class Template(object):
           self._meta = adict.__dict2adict__(self._meta, recursive=True)
     if self._meta is None:
       self._meta = adict()
-    self._meta.formats = [self.rextmap.get(fmt, fmt)
-                          for fmt in formats if fmt != 'spec']
+    self._meta.formats = [rfmt
+                          for fmt in formats if fmt != 'spec'
+                          for rfmt in self.rextmap.get(fmt, [fmt])]
     return self._meta
 
 #------------------------------------------------------------------------------

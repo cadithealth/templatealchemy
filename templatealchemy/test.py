@@ -60,6 +60,7 @@ class TestTemplateAlchemy(unittest.TestCase):
     self.assertEqual(tpl.render('html'), 'html\n')
     self.assertEqual(tpl.render('text'), 'text\n')
     self.assertEqual(tpl.render('csv'), 'text\n')
+    self.assertEqual(tpl.meta.formats, ['html', 'text', 'csv'])
 
   #----------------------------------------------------------------------------
   def test_mako(self):
