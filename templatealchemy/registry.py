@@ -18,6 +18,7 @@ class Registry(object):
   #----------------------------------------------------------------------------
   def __init__(self, settings=None, prefix=None):
     self.managers = dict()
+    self.default  = None
     self.configure(settings, prefix)
 
   #----------------------------------------------------------------------------
