@@ -7,7 +7,8 @@
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-import inspect
+import inspect, sys
+PY3 = sys.version_info[0] == 3
 
 #------------------------------------------------------------------------------
 def resolve(spec):
@@ -80,6 +81,14 @@ def callingPkgName(ignore=None):
   finally:
     del record
     del stack
+
+#------------------------------------------------------------------------------
+if PY3:
+  def isstr(obj):
+    return isinstance(obj, str)
+else:
+  def isstr(obj):
+    return isinstance(obj, basestring)
 
 #------------------------------------------------------------------------------
 # end of $Id$
