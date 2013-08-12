@@ -9,7 +9,7 @@
 
 import os, yaml, re
 from . import util
-from .util import adict
+from .util import adict, isstr
 
 __all__ = ('Manager', 'Template', 'loadSource', 'loadRenderer')
 
@@ -123,10 +123,19 @@ class Template(object):
     self.fmtcmp   = None
 
   #----------------------------------------------------------------------------
-  def getTemplate(self, name):
+  def getTemplate(self, source):
+    '''
+    Loads the sub-template `source` within the context of the current
+    template and/or manager. If `source` is a string, then the sub-template
+    is hierarchically loaded from the current source. If `source` is a
+    :class:`templatealchemy.api.Source`, then it is used as the source for
+    the returned template.
+    '''
+    if isstr(source):
+      source = self.source.getSource(source)
     # TODO: i need to move to a `Manager` type of approach so that
     #       i only need to pass one parameter to sub-templates.
-    return Template(self.source.getSource(name), self.renderer,
+    return Template(source, self.renderer,
                     extmap=self.extmap, fmtcmp=self.fmtcmp)
 
   #----------------------------------------------------------------------------

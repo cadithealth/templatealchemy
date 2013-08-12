@@ -276,6 +276,25 @@ Excellent
 '''
     self.assertMultiLineEqual(out, chk)
 
+  #----------------------------------------------------------------------------
+  def test_source_override(self):
+    root = templatealchemy.Template(
+      source='pkg:templatealchemy:test_data/mustache',
+      renderer='mustache')
+    src = templatealchemy.loadSource('string:Short: {{title}}')
+    tpl = root.getTemplate(src)
+    out = tpl.render('html', adict(
+        title='TemplateAlchemy',
+        doc=adict(title='Mustache'),
+        sections=[
+          adict(title='Overview', text='Good'),
+          adict(title='Details', text='Poor'),
+          adict(title='Utility', text='Excellent'),
+          ]))
+    chk = 'Short: TemplateAlchemy'
+    self.assertMultiLineEqual(out, chk)
+    self.assertEqual(tpl.meta.formats, ['data'])
+
 
 #------------------------------------------------------------------------------
 # end of $Id$
