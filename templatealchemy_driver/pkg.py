@@ -7,8 +7,7 @@
 # copy: (C) Copyright 2013 Cadit Health Inc., All Rights Reserved.
 #------------------------------------------------------------------------------
 
-import pkgutil, pkg_resources, os.path
-from StringIO import StringIO
+import pkgutil, pkg_resources, os.path, six
 from templatealchemy import api, util
 
 #------------------------------------------------------------------------------
@@ -46,7 +45,7 @@ class PkgSource(api.Source):
   def get(self, format):
     if format:
       format = '.' + format
-    return StringIO(pkgutil.get_data(self.module, self.path + format))
+    return six.StringIO(pkgutil.get_data(self.module, self.path + format))
 
   #----------------------------------------------------------------------------
   def getRelated(self, name):
@@ -54,7 +53,7 @@ class PkgSource(api.Source):
       name = name[1:]
     else:
       name = os.path.dirname(self.path) + '/' + name
-    return StringIO(pkgutil.get_data(self.module, name))
+    return six.StringIO(pkgutil.get_data(self.module, name))
 
 #------------------------------------------------------------------------------
 # end of $Id$
