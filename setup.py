@@ -20,15 +20,16 @@ def read(*parts, **kw):
   except: return kw.get('default', '')
 
 test_requires = [
-  'nose                 >= 1.2.1',
+  'nose                 >= 1.3.0',
   'coverage             >= 3.5.3',
   ]
 
 requires = [
   'distribute           >= 0.6.24',
+  'six                  >= 1.4.1',
   'PyYAML               >= 3.10',
   # TODO: make these only dependencies if they are actually wanted...
-  'SQLAlchemy           >= 0.8.1',
+  'SQLAlchemy           >= 0.8.2',
   'Mako                 >= 0.7.2',
   'MarkupSafe           >= 0.15',
   'pystache             >= 0.5.3',
