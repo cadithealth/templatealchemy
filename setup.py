@@ -22,10 +22,9 @@ def read(*parts, **kw):
 test_requires = [
   'nose                 >= 1.3.0',
   'coverage             >= 3.5.3',
-  ]
+]
 
 requires = [
-  'distribute           >= 0.6.24',
   'six                  >= 1.4.1',
   'PyYAML               >= 3.10',
   # TODO: make these only dependencies if they are actually wanted...
@@ -34,13 +33,13 @@ requires = [
   'MarkupSafe           >= 0.15',
   'pystache             >= 0.5.3',
   # 'Markdown             >= 2.3.1',
-  ]
+]
 
 entrypoints = {
   'console_scripts': [
     'ta-eval            = templatealchemy.cli:main',
-    ],
-  }
+  ],
+}
 
 classifiers = [
   'Development Status :: 4 - Beta',
@@ -51,11 +50,11 @@ classifiers = [
   'Natural Language :: English',
   'License :: OSI Approved :: MIT License',
   'License :: Public Domain',
-  ]
+]
 
 setup(
   name                  = 'TemplateAlchemy',
-  version               = '0.1.20',
+  version               = read('VERSION.txt', default='0.0.1').strip(),
   description           = 'An un-opinionated template abstraction layer',
   long_description      = read('README.rst'),
   classifiers           = classifiers,
@@ -72,7 +71,7 @@ setup(
   test_suite            = 'templatealchemy',
   entry_points          = entrypoints,
   license               = 'MIT (http://opensource.org/licenses/MIT)',
-  )
+)
 
 #------------------------------------------------------------------------------
 # end of $Id$
