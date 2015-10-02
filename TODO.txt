@@ -11,3 +11,5 @@
 - allow wildcard extmap, eg {'*': mako} ?
 
 - handling of templates that don't exist is not so good...
+
+- replace templatealchemy.util with aadict, asset, morph
