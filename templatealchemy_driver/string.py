@@ -33,6 +33,14 @@ class StringSource(api.Source):
   def getRelated(self, name):
     return None
 
+  #----------------------------------------------------------------------------
+  def resolveUri(self, uri, base=None):
+    if uri.startswith('pkg:'):
+      return uri
+    # forcing all "string:" to use "pkg" sources...
+    # todo: perhaps inspect `uri` to see if it is resolvable as-is?...
+    return 'pkg:' + uri
+
 #------------------------------------------------------------------------------
 # end of $Id$
 #------------------------------------------------------------------------------
